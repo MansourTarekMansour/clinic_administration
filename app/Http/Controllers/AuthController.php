@@ -39,12 +39,17 @@ class AuthController extends Controller
         ]);
 
         $user->save();
-
+        $token = $user->createToken('access_token')->accessToken;
         return response()->json([
             'status' => 'success',
             'message' => 'Registration successful',
             'data' => [
-                'user' => $user
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'image' => $user->image,
+                'access_token' => $token->token,
             ]
         ], 200);
     }
@@ -71,8 +76,12 @@ class AuthController extends Controller
             'status' => 'success',
             'message' => 'Login successful',
             'data' => [
-                'user' => $user,
-                'access_token' => $token,
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'image' => $user->image,
+                'access_token' => $token->token,
             ]
         ], 200);
     }
