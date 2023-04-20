@@ -21,7 +21,15 @@ class AuthController extends Controller
             'phone' => 'required|string|max:255',
         ]);
 
-        $image = $request->file('image')->store('public/images');
+        try {
+            $image = $request->file('image')->store('public/images');
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid image file',
+                'data' => null
+            ], 400);
+        }
 
         if ($validator->fails()) {
             return response()->json([
