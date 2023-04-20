@@ -17,19 +17,9 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'image' => 'required|image',
+            'image' => 'required|file|image',
             'phone' => 'required|string|max:255',
         ]);
-
-        try {
-            $image = $request->file('image')->store('public/images');
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid image file',
-                'data' => null
-            ], 400);
-        }
 
         if ($validator->fails()) {
             return response()->json([
@@ -37,6 +27,7 @@ class AuthController extends Controller
                 'message' => $validator->errors()
             ], 400);
         }
+        $image = $request->file('image')->store('public/images');
 
         $user = User::create([
             'name' => $request->name,
