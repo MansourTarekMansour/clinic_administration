@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Patient;
+use App\Models\Patient;
 use Illuminate\Http\Request;
 use App\Http\Requests\PatientValidator;
 use App\Http\Resources\PatientResource;
@@ -27,12 +27,12 @@ class PatientController extends Controller
             ], 500);
         }
     }
-    
-    public function showId(Patient $patient)
+
+    public function showId(Request $request)
     {
         try {
             // Load the patient and eager load the related appointments
-            $patient = Patient::with('appointments')->findOrFail($patient->id);
+            $patient = Patient::findOrFail($request->input('id'));
 
             // Return a success response with the patient data
             return response()->json([
@@ -53,16 +53,16 @@ class PatientController extends Controller
     {
         try {
             // Get the name query parameter from the request
-            $name = $request->query('name');
+            $name = $request->input('name');
 
             // Load the patient with the matching name and eager load the related appointments
-            $patient = Patient::with('appointments')->where('name', $name)->firstOrFail();
+            $patients = Patient::where('name', 'like', '%' . $name . '%')->get();
 
             // Return a success response with the patient data
             return response()->json([
                 'status' => 'success',
                 'message' => 'Patient retrieved successfully',
-                'data' => new PatientResource($patient)
+                'data' => PatientResource::collection($patients)
             ], 200);
         } catch (\Exception $e) {
             // Return an error response if the patient is not found or any other exception is thrown
@@ -74,11 +74,15 @@ class PatientController extends Controller
     }
 
 
-    public function showDate(Request $request, $startDate, $endDate)
+    public function showDate(Request $request)
     {
         try {
-            $patients = Patient::whereBetween('created_at', [$startDate, $endDate])->get();
+            $startDate = $request->input('startDate') . ' 00:00:00';
+            $endDate = $request->input('endDate') . ' 23:59:59';
 
+            $patients = Patient::whereBetween('created_at', [$startDate, $endDate])
+                ->get();
+            
             // Return a success response with the list of patients
             return response()->json([
                 'status' => 'success',
@@ -95,10 +99,11 @@ class PatientController extends Controller
         }
     }
 
-    public function store(Request $request, PatientValidator $validator)
+    public function store(Request $request)
     {
+        $validator = new PatientValidator();
         try {
-            $validatedData = $validator->validate($request->all());
+            $validatedData = $request->validate($validator->rules());
 
             // Create the patient using the validated data
             $patient = Patient::create($validatedData);
@@ -107,7 +112,7 @@ class PatientController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Patient created successfully',
-                'data' => PatientResource::collection($patient)
+                'data' => new PatientResource($patient)
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -123,10 +128,13 @@ class PatientController extends Controller
         }
     }
 
-    public function update(Request $request, Patient $patient, PatientValidator $validator)
+    public function update(Request $request, $id)
     {
+        $validator = new PatientValidator();
         try {
-            $validatedData = $validator->validate($request->all());
+            $patient = Patient::findOrFail($id);
+
+            $validatedData = $request->validate($validator->rules());
 
             // Update the patient using the validated data
             $patient->update($validatedData);
@@ -135,7 +143,7 @@ class PatientController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Patient updated successfully',
-                'data' => PatientResource::collection($patient)
+                'data' => new PatientResource($patient)
             ], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -151,9 +159,11 @@ class PatientController extends Controller
         }
     }
 
-    public function destroy(Patient $patient)
+    public function destroy(Request $request)
     {
         try {
+
+            $patient = Patient::findOrFail($request->input('id'));
             // Delete the patient
             $patient->delete();
 
