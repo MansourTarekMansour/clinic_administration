@@ -13,9 +13,11 @@ class PatientValidator extends FormRequest
 
     public function rules()
     {
+        $id = $this->route('patient') ? $this->route('patient')->id : null;
+
         return [
             'name' => 'required|string|max:255',
-            'national_id' => 'required|string|max:255|unique:patients,national_id,'.$this->id,
+            'national_id' => 'required|string|max:255|unique:patients,national_id,'.$id,
             'city' => 'required|string|max:255',
             'details' => 'nullable|string',
             'phone1' => 'nullable|string|max:255',
