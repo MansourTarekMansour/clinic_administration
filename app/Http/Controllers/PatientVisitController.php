@@ -88,6 +88,28 @@ class PatientVisitController extends Controller
         }
     }
 
+    public function showByPatientId(Request $request)
+    {
+        try {
+            
+            // Load the visit for the patient
+            $patient = Patient::findOrFail($request->input('patient_id'));
+
+            // Return a success response with the visit data
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Visit retrieved successfully',
+                'data' => VisitResource::collection($patient->visits)
+            ], 200);
+        } catch (\Exception $e) {
+            // Return an error response if the visit is not found or any other exception is thrown
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve visit data: ' . $e->getMessage()
+            ], 404);
+        }
+    }
+
     public function showName(Request $request)
     {
         try {

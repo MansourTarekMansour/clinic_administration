@@ -35,6 +35,7 @@ Route::group(['prefix' => 'patients'], function () {
 Route::group(['prefix' => 'patients/visits'], function () {
     Route::get('/', [PatientVisitController::class, 'index']);
     Route::get('/id', [PatientVisitController::class, 'showId']);
+    Route::get('/patientid', [PatientVisitController::class, 'showByPatientId']);
     Route::get('/name', [PatientVisitController::class, 'showName']);
     Route::get('/date', [PatientVisitController::class, 'showDate']);
     Route::post('/store/{patientId}', [PatientVisitController::class, 'store']);
