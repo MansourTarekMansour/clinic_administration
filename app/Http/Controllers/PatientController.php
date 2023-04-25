@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Patient;
 use Illuminate\Http\Request;
 use App\Http\Requests\PatientValidator;
@@ -12,8 +13,8 @@ class PatientController extends Controller
     public function index()
     {
         try {
-            $patients = Patient::all();
-
+            $patients = Patient::with('visits')->get();
+            
             return response()->json([
                 'status' => 'success',
                 'message' => 'Patients retrieved successfully',
