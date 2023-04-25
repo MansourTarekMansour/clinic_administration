@@ -17,7 +17,7 @@ class PatientValidator extends FormRequest
 
         return [
             'name' => 'required|string|max:255',
-            'national_id' => 'required|string|max:255|unique:patients,national_id,'.$id,
+            'national_id' => 'required|string|regex:/^\d{14}$/|unique:patients,national_id,'.$id,
             'city' => 'required|string|max:255',
             'details' => 'nullable|string',
             'phone1' => 'nullable|string|max:255',

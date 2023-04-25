@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PatientVisitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,15 @@ Route::group(['prefix' => 'patients'], function () {
     Route::delete('/delete', [PatientController::class, 'destroy']);
 });
 
+Route::group(['prefix' => 'patients/visits'], function () {
+    Route::get('/', [PatientVisitController::class, 'index']);
+    Route::get('/id', [PatientVisitController::class, 'showId']);
+    Route::get('/name', [PatientVisitController::class, 'showName']);
+    Route::get('/date', [PatientVisitController::class, 'showDate']);
+    Route::post('/store/{patientId}', [PatientVisitController::class, 'store']);
+    Route::put('/update/{id}', [PatientVisitController::class, 'update']);
+    Route::delete('/delete', [PatientVisitController::class, 'destroy']);
+});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

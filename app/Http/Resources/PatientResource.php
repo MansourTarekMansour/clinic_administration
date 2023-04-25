@@ -18,7 +18,7 @@ class PatientResource extends JsonResource
             'phone2' => $this->phone2,
             'disease_type' => $this->disease_type,
             'medical_rec' => $this->medical_rec,
-            'visits' => $this->visits
+            'visits' => VisitResource::collection($this->whenLoaded('visits')),
         ];
     }
 }
