@@ -41,8 +41,8 @@ class AuthController extends Controller
         $user->save();
         $token = $user->createToken('access_token')->accessToken;
 
-        $imageUrl = asset(Storage::url($user->image));
-        
+        $imageUrl = url(Storage::url($image));
+
         return response()->json([
             'status' => 'success',
             'message' => 'Registration successful',
@@ -83,7 +83,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
-                'image' => asset(Storage::url($user->image)),
+                'image' => url(Storage::url($user->image)),
                 'access_token' => $token->token,
             ]
         ], 200);
