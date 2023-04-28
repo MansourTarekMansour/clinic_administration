@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -39,6 +40,8 @@ class AuthController extends Controller
 
         $user->save();
         $token = $user->createToken('access_token')->accessToken;
+
+        $imageUrl = Storage::url($image);
         return response()->json([
             'status' => 'success',
             'message' => 'Registration successful',
@@ -47,7 +50,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
-                'image' => $user->image,
+                'image' => $imageUrl,
                 'access_token' => $token->token,
             ]
         ], 200);
@@ -79,7 +82,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
-                'image' => $user->image,
+                'image' => Storage::url($user->image),
                 'access_token' => $token->token,
             ]
         ], 200);
