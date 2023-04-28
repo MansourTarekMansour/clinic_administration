@@ -42,6 +42,7 @@ class AuthController extends Controller
         $token = $user->createToken('access_token')->accessToken;
 
         $imageUrl = asset(Storage::url($user->image));
+        
         return response()->json([
             'status' => 'success',
             'message' => 'Registration successful',
