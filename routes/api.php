@@ -19,8 +19,18 @@ use App\Http\Controllers\TreatmentPlanController;
 */
 
 Route::group(['prefix' => 'auth'], function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
+    // Register user
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
+    // Login user
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    // Logout user
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('logout', [AuthController::class, 'logout']);
+    });
+    // Reset password
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('password/reset', [AuthController::class, 'resetPassword'])->name('password.reset');
+    });
 });
 
 Route::group(['prefix' => 'patients'], function () {
