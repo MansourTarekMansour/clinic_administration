@@ -21,6 +21,7 @@ class RegisterRequest extends FormRequest
             'password' => 'required|string|min:8',
             'phone' => 'required|string|size:11|unique:users',
             'image' => 'required|file|max:2048',
+            'is_admin' => 'required',
         ];
     }
 
@@ -45,6 +46,7 @@ class RegisterRequest extends FormRequest
             'image.required' => 'The image field is required.',
             'image.file' => 'The image must be a valid image file.',
             'image.max' => 'The image may not be greater than :max kilobytes.',
+            'is_admin.required' => 'The is_admin field is required.',
         ];
     }
 
