@@ -33,6 +33,17 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
+Route::group(['prefix' => 'user'], function () {
+    // get all user
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/', [AuthController::class, 'getAllUsers'])->name('user.get');
+    });
+    // Update user 
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/update', [AuthController::class, 'updateUserData'])->name('user.update');
+    });
+});
+
 Route::group(['prefix' => 'patients'], function () {
     Route::get('/', [PatientController::class, 'index']);
     Route::get('/id', [PatientController::class, 'showId']);
@@ -60,9 +71,4 @@ Route::group(['prefix' => 'treatment-plans'], function () {
     Route::post('/', [TreatmentPlanController::class, 'store']);
     Route::put('/update/{id}', [TreatmentPlanController::class, 'update']);
     Route::delete('/delete/{id}', [TreatmentPlanController::class, 'destroy']);
-});
-
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
 });
